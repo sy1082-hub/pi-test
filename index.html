@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pi Korea Music</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; background-color: white; margin: 0; padding-top: 20px;">
-    <button id="pay-button" style="width: 90%; height: 100px; background-color: #673AB7; color: white; font-size: 25px; font-weight: bold; border-radius: 15px; border: none; cursor: pointer;">
-        0.1 Pi 결제하기 (클릭)
+<body style="text-align: center; padding-top: 50px; font-family: sans-serif; background-color: #f4f4f4;">
+
+    <h1 style="color: #673ab7;">Pi Korea Music</h1>
+    <p>테스트 결제를 진행합니다.</p>
+
+    <button id="pay-button" style="background-color: #673ab7; color: white; padding: 25px 50px; font-size: 24px; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: bold;">
+        0.1 Pi 결제하기
     </button>
-    <h2 style="margin-top: 20px;">Pi Korea Music Test</h2>
-<script>
-    const Pi = window.Pi;
-    Pi.init({ version: "1.5", sandbox: true, appId: "bebemama-7b0f8ad69f2fa423" });
-</script>
+
+    <script>
+        const Pi = window.Pi;
+        // 샌드박스 모드 활성화 (테스트용)
+        Pi.init({ version: "1.5", sandbox: true });
+
+        document.getElementById('pay-button').addEventListener('click', async function() {
+            try {
+                console.log("결제 시작...");
+                const payment = await Pi.createPayment({
+                    amount: 0.1,
+                    memo: "Pi Korea Music Test",
+                    metadata: { orderId: "test-" + Date.now() }
+                }, {
+                    // 서버가 없어도 창이 뜨게 하기 위한 최소 설정
+                    onReadyForServerApproval: function(paymentId) {
+                        console.log("승인 대기: " + paymentId);
+                    },
+                    onReadyForServerCompletion: function(paymentId, txid) {
+                        console.log("완료: " + txid);
+                    },
+                    onCancel: function(paymentId) { console.log("취소됨"); },
+                    onError: function(error, payment) { 
+                        alert("파이 브라우저에서 실행 중인지 확인하세요!");
+                    }
+                });
+            } catch (err) {
+                alert("오류 발생: " + err.message);
+            }
+        });
+    </script>
 </body>
 </html>
