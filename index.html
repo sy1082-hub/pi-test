@@ -7,11 +7,8 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body style="text-align: center; padding-top: 50px; font-family: sans-serif; background-color: #f4f4f4;">
-
     <h1 style="color: #673ab7;">Pi Korea Music</h1>
-    <p>테스트 결제를 진행합니다.</p>
-
-    <button id="pay-button" style="background-color: #673ab7; color: white; padding: 25px 50px; font-size: 24px; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: bold;">
+    <button id="pay-button" style="background-color: #673ab7; color: white; padding: 25px 50px; font-size: 24px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">
         0.1 Pi 결제하기
     </button>
 
@@ -21,19 +18,17 @@
 
         document.getElementById('pay-button').addEventListener('click', async function() {
             try {
-                const payment = await Pi.createPayment({
+                await Pi.createPayment({
                     amount: 0.1,
                     memo: "Pi Korea Music Test",
                     metadata: { orderId: "test-" + Date.now() }
                 }, {
-                    onReadyForServerApproval: function(paymentId) { console.log(paymentId); },
-                    onReadyForServerCompletion: function(paymentId, txid) { console.log(txid); },
-                    onCancel: function(paymentId) { console.log("취소됨"); },
-                    onError: function(error, payment) { alert("에러: " + error.message); }
+                    onReadyForServerApproval: function(id) { console.log(id); },
+                    onReadyForServerCompletion: function(id, tx) { console.log(tx); },
+                    onCancel: function(id) { console.log("취소"); },
+                    onError: function(e) { alert("에러: " + e.message); }
                 });
-            } catch (err) {
-                alert("오류: " + err.message);
-            }
+            } catch (err) { alert("오류: " + err.message); }
         });
     </script>
 </body>
