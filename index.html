@@ -17,31 +17,22 @@
 
     <script>
         const Pi = window.Pi;
-        // 샌드박스 모드 활성화 (테스트용)
         Pi.init({ version: "1.5", sandbox: true });
 
         document.getElementById('pay-button').addEventListener('click', async function() {
             try {
-                console.log("결제 시작...");
                 const payment = await Pi.createPayment({
                     amount: 0.1,
                     memo: "Pi Korea Music Test",
                     metadata: { orderId: "test-" + Date.now() }
                 }, {
-                    // 서버가 없어도 창이 뜨게 하기 위한 최소 설정
-                    onReadyForServerApproval: function(paymentId) {
-                        console.log("승인 대기: " + paymentId);
-                    },
-                    onReadyForServerCompletion: function(paymentId, txid) {
-                        console.log("완료: " + txid);
-                    },
+                    onReadyForServerApproval: function(paymentId) { console.log(paymentId); },
+                    onReadyForServerCompletion: function(paymentId, txid) { console.log(txid); },
                     onCancel: function(paymentId) { console.log("취소됨"); },
-                    onError: function(error, payment) { 
-                        alert("파이 브라우저에서 실행 중인지 확인하세요!");
-                    }
+                    onError: function(error, payment) { alert("에러: " + error.message); }
                 });
             } catch (err) {
-                alert("오류 발생: " + err.message);
+                alert("오류: " + err.message);
             }
         });
     </script>
